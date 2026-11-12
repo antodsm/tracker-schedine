@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1220">
+<title>Tracker Schedine 4.0</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1220;--panel:#121c2d;--panel2:#0e1929;--line:#293b53;--text:#edf3fb;--muted:#9aabc1;--green:#20c997;--red:#ff6577;--amber:#ffd77b;--blue:#5b9cff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 8% 0%,#1c496022,transparent 35%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.app{width:min(1160px,calc(100% - 24px));margin:auto;padding:22px 0 48px}header{display:flex;align-items:center;gap:12px;margin-bottom:18px}.logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#35dfad,#168aaf);display:grid;place-items:center;color:#05241d;font-size:25px;font-weight:900}.brand{flex:1}h1{font-size:clamp(22px,4vw,30px);margin:0}.sub,.muted{color:var(--muted);font-size:12px}.tag{border:1px solid var(--line);border-radius:20px;padding:7px 10px;color:var(--green);font-size:10px;font-weight:800}
+nav{display:flex;gap:8px;overflow:auto;padding-bottom:12px;margin-bottom:8px}nav button{white-space:nowrap;background:#182438;color:var(--muted);border:1px solid var(--line);border-radius:10px;padding:10px 13px;font-weight:700}nav button.active{background:var(--green);color:#05241d;border-color:var(--green)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}.stat,.panel{background:linear-gradient(180deg,#182438,#121c2d);border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 32px #0003}.stat{padding:14px}.stat small{display:block;color:var(--muted);font-size:11px;margin-bottom:7px}.stat strong{font-size:clamp(17px,3vw,24px)}.positive{color:var(--green)}.negative{color:var(--red)}
+.panel{padding:17px;margin-bottom:14px}.panel h2{font-size:17px;margin:0 0 5px}.head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}.grid{display:grid;grid-template-columns:1.2fr 1fr .7fr auto;gap:9px;align-items:end}.field{margin-bottom:11px}label{display:block;color:var(--muted);font-size:11px;margin:0 0 6px 2px}input,select,textarea{width:100%;min-width:0;background:#0d1727;border:1px solid #30415a;border-radius:9px;padding:11px;color:var(--text);font:inherit;outline:none}textarea{min-height:104px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:var(--green)}button{font:inherit;cursor:pointer}.btn{border:0;border-radius:9px;padding:11px 13px;font-weight:800;font-size:12px}.primary{background:var(--green);color:#05241d}.secondary{background:#263951;color:var(--text);border:1px solid #38516f}.danger{background:#492633;color:#ffb7c0;border:1px solid #713444}.blue{background:#1b3657;color:#cfe2ff;border:1px solid #315a88}.small{padding:7px 9px;font-size:11px}.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}.event,.ticket,.match-card{background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:11px;margin-top:8px}.event{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center}.event b{font-size:13px}.event small{display:block;color:var(--muted);margin-top:4px}.odd{color:var(--green);font-weight:800}.remove{background:none;border:0;color:var(--red);font-size:20px}.summary{background:#0d1727;border:1px solid var(--line);border-radius:11px;padding:12px;margin-top:12px}.sumrow{display:flex;justify-content:space-between;padding:6px 0;color:var(--muted);font-size:12px;gap:10px}.sumrow strong{color:var(--text);text-align:right}.sumrow.total{border-top:1px solid var(--line);padding-top:11px;margin-top:5px}.sumrow.total strong{font-size:18px;color:var(--green)}
+.empty{text-align:center;padding:22px;color:var(--muted);font-size:12px;border:1px dashed #34465e;border-radius:10px;margin-top:10px}.hidden{display:none!important}.notice{font-size:10px;line-height:1.5;color:var(--muted);margin-top:12px}.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}.chip{border:1px solid var(--line);background:#0e1929;color:var(--muted);border-radius:20px;padding:7px 10px;font-size:11px}.chip.active{background:var(--green);color:#05241d;border-color:var(--green)}
+.tickethead{display:flex;justify-content:space-between;gap:10px}.tickettitle{font-size:13px;font-weight:800}.meta{font-size:10px;color:var(--muted);margin-top:4px}.status{font-size:9px;font-weight:900;border-radius:20px;padding:5px 8px;height:max-content}.pending{background:#473a20;color:var(--amber)}.won{background:#123e35;color:#62e5bb}.lost{background:#492633;color:#ff9eaa}.ticketevents{font-size:11px;color:#b7c6d8;line-height:1.6;margin:10px 0}.ticketfoot{display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:1px solid var(--line);padding-top:10px}.ticketfoot .actions{display:flex;gap:5px;flex-wrap:wrap}
+.chart{height:140px;display:flex;align-items:end;justify-content:space-around;gap:8px;margin-top:15px}.barcol{height:100%;flex:1;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:4px}.bartrack{height:100px;width:70%;background:#1a293d;border-radius:6px;display:flex;align-items:end;overflow:hidden}.bar{width:100%;border-radius:6px}.barcol small{font-size:9px;color:var(--muted)}.barcol b{font-size:9px}
+.system-event{display:grid;grid-template-columns:1fr repeat(3,32px);gap:6px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}.result{border:1px solid #38516f;background:#263951;color:var(--text);border-radius:7px;height:30px;font-size:10px;font-weight:900}.result.selV{background:#123e35;border-color:var(--green)}.result.selP{background:#492633;border-color:var(--red)}.result.selN{background:#473a20;border-color:var(--amber)}
+.catalog-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.match-card{margin:0}.match-top{display:flex;justify-content:space-between;gap:8px;align-items:start}.match-name{font-weight:800;font-size:13px}.match-league{font-size:10px;color:var(--muted);margin-top:4px}.quote-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:11px}.quote{background:#17263a;border:1px solid #30445f;border-radius:8px;padding:8px 5px;color:var(--text);text-align:center}.quote span{display:block;color:var(--muted);font-size:9px;margin-bottom:4px}.quote b{font-size:12px;color:var(--green)}.quote:hover{border-color:var(--green);background:#173b37}.pill{display:inline-block;border-radius:20px;padding:4px 7px;background:#20344c;color:#b7cce3;font-size:9px}
+.gen-layout{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.gen-result{border:1px solid var(--line);border-radius:12px;padding:12px;background:#0e1929;margin-top:12px}.gen-result h3{margin:0 0 8px;font-size:14px}.seg{display:flex;gap:7px;flex-wrap:wrap}.seg button{padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:#0e1929;color:var(--muted);font-size:11px;font-weight:800}.seg button.active{background:var(--green);border-color:var(--green);color:#05241d}.quote-line{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:11px}.copy-area{white-space:pre-wrap;overflow-wrap:anywhere;background:#0a1422;border:1px solid var(--line);border-radius:9px;padding:12px;color:#d8e5f4;font-size:11px;line-height:1.6;margin-top:10px}
+@media(max-width:760px){.catalog-grid{grid-template-columns:1fr}.gen-layout{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr 1fr}.grid .wide{grid-column:1/-1}.grid button{grid-column:1/-1}.quote-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:440px){.app{width:calc(100% - 18px);padding-top:15px}.panel{padding:13px}.stats{gap:6px}.stat{padding:10px}.stat small{font-size:9px}.event{gap:7px}.ticketfoot{align-items:flex-start;flex-direction:column}.gen-layout{grid-template-columns:1fr 1fr}.quote-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.quote{padding:7px 2px}.quote span{font-size:8px}.quote b{font-size:11px}}
+</style>
+</head>
+<body>
+<main class="app">
+<header><div class="logo">T</div><div class="brand"><h1>Tracker Schedine</h1><div class="sub">Palinsesto rapido · Generatore · Sistemi integrali</div></div><span class="tag">WEB 5.0</span></header>
+<nav>
+<button class="active" data-tab="builder">Schedina</button>
+<button data-tab="catalog">Palinsesto</button>
+<button data-tab="generator">Generatore</button>
+<button data-tab="ai">Analisi AI</button>
+<button data-tab="systems">Sistemi</button>
+<button data-tab="history">Storico</button>
+<button data-tab="stats">Statistiche</button>
+</nav>
+<section class="stats">
+<div class="stat"><small>Schedine salvate</small><strong id="count">0</strong></div>
+<div class="stat"><small>Vinte / Perse</small><strong id="wonlost">0 / 0</strong></div>
+<div class="stat"><small>Bilancio netto</small><strong id="balance">€ 0,00</strong></div>
+</section>
+
+<section id="tab-builder" class="tab panel">
+<div class="head"><div><h2>Schedina in corso</h2><span class="muted">Aggiungi gli eventi dal palinsesto o manualmente</span></div><span class="tag" id="eventcount">0 eventi</span></div>
+<form id="eventform" class="grid">
+<div class="field wide"><label>Partita</label><input id="match" required maxlength="90" placeholder="Es. Inter - Milan"></div>
+<div class="field"><label>Pronostico</label><input id="pick" required maxlength="60" placeholder="Es. 1, Over 2.5"></div>
+<div class="field"><label>Quota decimale</label><input id="odd" required type="number" min="1.01" max="1000" step=".01" placeholder="1.85"></div>
+<div class="field"><label>Campionato</label><input id="league" maxlength="50" placeholder="Serie A"></div>
+<div class="field"><label>Tipologia</label><select id="category"><option>Esito</option><option>Over/Under</option><option>Goal/No Goal</option><option>Doppia chance</option><option>Multigol</option><option>Altro</option></select></div>
+<button class="btn primary" type="submit">+ Aggiungi evento</button>
+</form>
+<div id="events"></div>
+<div class="field" style="margin-top:13px"><label>Puntata (€)</label><input id="stake" type="number" min=".01" step=".01" value="2.00"></div>
+<div class="summary"><div class="sumrow"><span>Quota totale</span><strong id="totalodds">—</strong></div><div class="sumrow"><span>Vincita potenziale lorda</span><strong id="gross">—</strong></div><div class="sumrow total"><span>Profitto potenziale netto</span><strong id="net">—</strong></div></div>
+<div class="row" style="margin-top:12px"><button id="save" class="btn primary">Salva schedina</button><button id="clear" class="btn secondary">Azzera</button></div>
+<div class="row" style="margin-top:8px"><button id="copySlip" class="btn blue">Copia schedina</button><button id="shareSlip" class="btn secondary">Condividi</button></div>
+<p class="notice">Le quote sono inserite manualmente o nel palinsesto e servono per simulazioni matematiche. Non sono quote live né garanzie di vincita.</p>
+</section>
+
+<section id="tab-catalog" class="tab panel hidden">
+<div class="head"><div><h2>Catalogo partite / Palinsesto</h2><span class="muted">Tocca una quota per aggiungerla subito alla schedina</span></div><span class="tag" id="catalogCount">0 partite</span></div>
+<div class="grid" style="grid-template-columns:1fr 1fr">
+<div class="field wide"><label>Nome partita</label><input id="catMatch" placeholder="Es. Roma - Lazio"></div>
+<div class="field"><label>Campionato</label><input id="catLeague" placeholder="Es. Serie A"></div>
+<div class="field"><label>Quota 1</label><input id="q1" type="number" step=".01" placeholder="2.10"></div>
+<div class="field"><label>Quota X</label><input id="qX" type="number" step=".01" placeholder="3.20"></div>
+<div class="field"><label>Quota 2</label><input id="q2" type="number" step=".01" placeholder="3.50"></div>
+<div class="field"><label>Gol</label><input id="qGol" type="number" step=".01" placeholder="1.80"></div>
+<div class="field"><label>NoGol</label><input id="qNoGol" type="number" step=".01" placeholder="1.95"></div>
+<div class="field"><label>Over 2.5</label><input id="qOver" type="number" step=".01" placeholder="1.90"></div>
+<div class="field"><label>Under 2.5</label><input id="qUnder" type="number" step=".01" placeholder="1.85"></div>
+<button id="saveMatch" class="btn primary">Salva partita nel palinsesto</button>
+</div>
+<div class="head" style="margin-top:12px"><h2>Importa partite da testo</h2><span class="muted">Una partita per riga</span></div>
+<textarea id="importText" placeholder="Formato: Partita | Campionato | 1=2.10 | X=3.20 | 2=3.50 | Gol=1.80 | NoGol=1.95 | Over 2.5=1.90 | Under 2.5=1.85"></textarea>
+<button id="importBtn" class="btn secondary" style="margin-top:8px">Importa righe</button>
+<p class="notice">Esempio: Inter - Milan | Serie A | 1=2.10 | X=3.20 | 2=3.50 | Gol=1.80 | NoGol=1.95 | Over 2.5=1.90 | Under 2.5=1.85. I dati precaricati sono esempi modificabili, non palinsesto ufficiale.</p>
+<div class="head" style="margin-top:20px"><h2>Partite disponibili</h2><input id="catalogSearch" style="max-width:220px" placeholder="Cerca partita..."></div>
+<div id="catalogList" class="catalog-grid"></div>
+</section>
+
+<section id="tab-generator" class="tab panel hidden">
+<div class="head"><div><h2>Generatore automatico</h2><span class="muted">Crea una proposta dalla lista delle partite caricate</span></div><span class="tag">SMART PICK</span></div>
+<div class="gen-layout">
+<div class="field"><label>Numero eventi</label><input id="genN" type="number" min="2" max="15" value="4"></div>
+<div class="field"><label>Rischio</label><select id="risk"><option value="low">Basso · 1.20–1.50</option><option value="medium" selected>Medio · 1.50–2.20</option><option value="high">Alto · oltre 2.20</option><option value="any">Qualsiasi quota</option></select></div>
+<div class="field"><label>Quota totale minima</label><input id="minOdds" type="number" min="1" step=".01" value="5.00"></div>
+<div class="field"><label>Quota totale massima</label><input id="maxOdds" type="number" min="1" step=".01" value="15.00"></div>
+</div>
+<div class="field"><label>Modalità di generazione</label><div class="seg"><button id="randomMode" class="active" type="button">Casuale</button><button id="smartMode" type="button">Intelligente</button></div></div>
+<div class="field"><label>Tipo schedina</label><div class="seg"><button id="multiMode" class="active" type="button">Multipla classica</button><button id="systemMode" type="button">Sistema integrale / correzione</button></div></div>
+<div id="systemOptions" class="grid hidden" style="grid-template-columns:1fr 1fr">
+<div class="field"><label>Quante selezioni devono essere corrette</label><select id="genK"><option value="2">2 su N</option><option value="3" selected>3 su N</option><option value="4">4 su N</option><option value="5">5 su N</option><option value="6">6 su N</option></select></div>
+<div class="field"><label>Puntata per combinazione (€)</label><input id="genUnitStake" type="number" min=".01" step=".01" value="1.00"></div>
+</div>
+<button id="generate" class="btn primary" style="width:100%;padding:14px">Genera schedina casuale / intelligente</button>
+<div id="genOutput"></div>
+<p class="notice">Il generatore usa esclusivamente le quote che hai inserito nel catalogo. “Intelligente” ordina le alternative in base alla fascia di rischio e cerca di rispettare il totale richiesto: non valuta la reale probabilità degli eventi e non garantisce risultati.</p>
+</section>
+
+<section id="tab-systems" class="tab panel hidden">
+<div class="head"><div><h2>Sistemi integrali</h2><span class="muted">Tutte le combinazioni possibili dello sviluppo scelto</span></div></div>
+<div class="summary"><div class="sumrow"><span>Eventi nella schedina corrente</span><strong id="sysN">0</strong></div><div class="sumrow"><span>Combinazioni</span><strong id="sysCount">—</strong></div></div>
+<div class="grid" style="grid-template-columns:1fr 1fr;margin-top:12px">
+<div class="field"><label>Sviluppo</label><select id="sysK"><option value="2">Integrale a 2</option><option value="3">Integrale a 3</option><option value="4">Integrale a 4</option><option value="5">Integrale a 5</option><option value="6">Integrale a 6</option><option value="7">Integrale a 7</option><option value="8">Integrale a 8</option><option value="9">Integrale a 9</option><option value="10">Integrale a 10</option></select></div>
+<div class="field"><label>Puntata per combinazione (€)</label><input id="sysStake" type="number" min=".01" step=".01" value="1.00"></div>
+</div>
+<div class="sumrow"><span>Costo totale</span><strong id="sysCost">—</strong></div><button id="saveSystem" class="btn primary" style="width:100%;margin-top:8px">Genera e salva sistema</button>
+<div class="head" style="margin-top:20px"><h2>I miei sistemi</h2><span class="muted" id="systemCount">0 salvati</span></div><div id="systemsList"></div>
+</section>
+
+<section id="tab-history" class="tab panel hidden">
+<div class="head"><div><h2>Le mie schedine</h2><span class="muted">Storico e risultati</span></div><button id="backup" class="btn secondary small">Esporta backup</button></div>
+<div class="grid" style="grid-template-columns:1fr 1fr"><div class="field"><label>Campionato</label><input id="filterLeague" placeholder="Cerca..."></div><div class="field"><label>Tipologia</label><select id="filterCategory"><option>Tutte</option><option>Esito</option><option>Over/Under</option><option>Goal/No Goal</option><option>Doppia chance</option><option>Multigol</option><option>Altro</option></select></div></div><div id="history"></div>
+</section>
+<section id="tab-stats" class="tab panel hidden">
+<h2>Statistiche e rendimento</h2><p class="muted">Calcolate sulle schedine singole definite come vinte o perse.</p>
+<div class="stats"><div class="stat"><small>Percentuale successo</small><strong id="success">0%</strong></div><div class="stat"><small>ROI</small><strong id="roi">0%</strong></div><div class="stat"><small>In attesa</small><strong id="pending">0</strong></div></div>
+<h2 style="margin-top:18px">Bilancio ultimi 6 mesi</h2><div class="chart" id="chart"></div>
+<p class="notice">ROI = bilancio netto diviso totale puntato sulle schedine definite. I sistemi sono rendicontati separatamente.</p>
+</section>
+
+<section id="tab-ai" class="tab panel hidden">
+  <div class="head"><div><h2>Genera schedina da dati reali</h2><span class="muted">API-Football + analisi statistica Poisson + selezione AI</span></div><span class="tag">AI DATA ENGINE</span></div>
+  <div class="summary" style="margin-top:0">
+    <div class="sumrow"><span>Connessione backend</span><strong id="aiStatus">Verifica…</strong></div>
+    <div class="sumrow"><span>Fonti</span><strong>API-Football · OpenAI (facoltativo)</strong></div>
+  </div>
+  <div class="gen-layout" style="margin-top:14px">
+    <div class="field"><label>Data partite</label><input id="aiDate" type="date"></div>
+    <div class="field"><label>Numero eventi (2–15)</label><input id="aiCount" type="number" min="2" max="15" value="4"></div>
+    <div class="field"><label>Profilo</label><select id="aiProfile"><option value="safe">Sicura · probabilità ≥75%</option><option value="balanced" selected>Equilibrata · 55–75%</option><option value="value">Value bet · valore positivo</option><option value="bomb">Bomba · quote più alte</option></select></div>
+    <div class="field"><label>Quota totale obiettivo</label><input id="aiTarget" type="number" min="1.01" max="100000" step="0.1" value="6"></div>
+  </div>
+  <div class="row">
+    <div class="field"><label>Campionati</label><select id="aiLeagues"><option value="all">Tutti quelli disponibili per la data</option><option value="top">Solo principali (filtraggio successivo)</option></select></div>
+    <div class="field"><label>Massimo partite da approfondire</label><select id="aiMax"><option>6</option><option selected>10</option><option>15</option></select></div>
+  </div>
+  <button id="aiGenerate" class="btn primary" style="width:100%;margin-top:5px">Analizza partite e genera schedina</button>
+  <p class="notice">L'analisi usa dati realmente restituiti dal fornitore. La copertura cambia per campionato e stagione. Dati assenti vengono indicati come non disponibili; nessuna percentuale è una garanzia. L'AI può spiegare e ordinare i dati, ma non può prevedere con certezza il risultato.</p>
+  <div id="aiMessage" class="notice" aria-live="polite"></div>
+  <div id="aiOutput"></div>
+</section>
+
+<footer>Tracker Schedine 5.0 · Dati locali + analisi online tramite backend</footer>
+</main>
+<script>
+(()=>{"use strict";
+const KEY="trackerSchedine_web_v4",MARKETS=["1","X","2","Gol","NoGol","Over 2.5","Under 2.5"];
+let catalog=[],events=[],tickets=[],systems=[],genMode="random",ticketMode="multi",lastGenerated=null,editingId=null;
+const $=id=>document.getElementById(id),money=n=>new Intl.NumberFormat("it-IT",{style:"currency",currency:"EUR"}).format(Number.isFinite(n)?n:0),fmt=n=>new Intl.NumberFormat("it-IT",{minimumFractionDigits:2,maximumFractionDigits:2}).format(n),uid=()=>crypto.randomUUID?crypto.randomUUID():`${Date.now()}-${Math.random()}`;
+const quoteFields={"1":"q1","X":"qX","2":"q2","Gol":"qGol","NoGol":"qNoGol","Over 2.5":"qOver","Under 2.5":"qUnder"};
+function choose(n,k){if(k<0||k>n)return 0;let r=1;for(let i=1;i<=Math.min(k,n-k);i++)r=r*(n-i+1)/i;return Math.round(r)}
+function combos(items,k){const out=[];function walk(start,p){if(p.length===k){out.push([...p]);return}for(let i=start;i<=items.length-(k-p.length);i++){p.push(items[i]);walk(i+1,p);p.pop()}}if(k>=1&&k<=items.length)walk(0,[]);return out}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify({catalog,tickets,systems}));return true}catch{alert("Salvataggio locale non riuscito. Esporta un backup.");return false}}
+function load(){try{const d=JSON.parse(localStorage.getItem(KEY)||"{}");catalog=Array.isArray(d.catalog)?d.catalog:[];tickets=Array.isArray(d.tickets)?d.tickets:[];systems=Array.isArray(d.systems)?d.systems:[]}catch{}if(!catalog.length){catalog=[
+{ id:uid(),match:"Inter - Milan",league:"Serie A · esempio",odds:{"1":2.1,"X":3.3,"2":3.4,"Gol":1.72,"NoGol":2.02,"Over 2.5":1.85,"Under 2.5":1.9}},
+{ id:uid(),match:"Roma - Lazio",league:"Serie A · esempio",odds:{"1":2.25,"X":3.1,"2":3.2,"Gol":1.8,"NoGol":1.95,"Over 2.5":1.92,"Under 2.5":1.82}},
+{ id:uid(),match:"Juventus - Napoli",league:"Serie A · esempio",odds:{"1":2.05,"X":3.25,"2":3.6,"Gol":1.88,"NoGol":1.86,"Over 2.5":2.05,"Under 2.5":1.72}},
+{ id:uid(),match:"Atalanta - Fiorentina",league:"Serie A · esempio",odds:{"1":1.82,"X":3.6,"2":4.1,"Gol":1.62,"NoGol":2.18,"Over 2.5":1.68,"Under 2.5":2.1}},
+{ id:uid(),match:"Bologna - Torino",league:"Serie A · esempio",odds:{"1":1.95,"X":3.15,"2":3.9,"Gol":1.9,"NoGol":1.84,"Over 2.5":2.15,"Under 2.5":1.68}},
+{ id:uid(),match:"Lecce - Udinese",league:"Serie A · esempio",odds:{"1":2.45,"X":3.0,"2":2.95,"Gol":2.0,"NoGol":1.75,"Over 2.5":2.2,"Under 2.5":1.62}}
+];persist()}}
+function renderStats(){const w=tickets.filter(t=>t.status==="won").length,l=tickets.filter(t=>t.status==="lost").length,p=tickets.filter(t=>t.status==="pending").length,b=tickets.reduce((s,t)=>s+(t.status==="won"?t.stake*(t.totalOdds-1):t.status==="lost"?-t.stake:0),0),settled=w+l,staked=tickets.filter(t=>t.status!=="pending").reduce((s,t)=>s+t.stake,0);$("count").textContent=tickets.length;$("wonlost").textContent=`${w} / ${l}`;$("balance").textContent=money(b);$("balance").className=b>0?"positive":b<0?"negative":"";$("success").textContent=`${fmt(settled?w/settled*100:0)}%`;$("roi").textContent=`${fmt(staked?b/staked*100:0)}%`;$("pending").textContent=p;renderChart()}
+function renderEvents(){const box=$("events");box.replaceChildren();$("eventcount").textContent=`${events.length} eventi`;if(!events.length)box.innerHTML='<div class="empty">Nessun evento. Aggiungi una partita dal palinsesto o manualmente.</div>';events.forEach((e,i)=>{const div=document.createElement("div");div.className="event";const info=document.createElement("div"),b=document.createElement("b"),sm=document.createElement("small");b.textContent=e.match;sm.textContent=`${e.pick} · ${e.league||"Campionato non indicato"} · ${e.category}`;info.append(b,sm);const o=document.createElement("span");o.className="odd";o.textContent=fmt(e.odd);const del=document.createElement("button");del.className="remove";del.textContent="×";del.onclick=()=>{events.splice(i,1);renderAll()};div.append(info,o,del);box.append(div)});const q=events.reduce((a,e)=>a*e.odd,1),s=Number($("stake").value)||0;$("totalodds").textContent=events.length?fmt(q):"—";$("gross").textContent=events.length?money(q*s):"—";$("net").textContent=events.length?money((q-1)*s):"—";$("save").disabled=!events.length||s<=0;renderSysCalc()}
+function addPick(match,league,pick,odd,category){if(events.some(e=>e.match===match)){if(!confirm(`Hai già inserito ${match}. Vuoi aggiungere anche un altro esito della stessa partita?`))return}events.push({id:uid(),match,league,pick,odd,category});renderAll();document.querySelector('nav button[data-tab="builder"]').click()}
+function renderCatalog(){const box=$("catalogList");box.replaceChildren();const term=$("catalogSearch").value.trim().toLowerCase(),list=catalog.filter(m=>(m.match+" "+m.league).toLowerCase().includes(term));$("catalogCount").textContent=`${catalog.length} partite`;if(!list.length){box.innerHTML='<div class="empty">Nessuna partita trovata.</div>';return}list.forEach(m=>{const card=document.createElement("article");card.className="match-card";const top=document.createElement("div");top.className="match-top";const info=document.createElement("div"),name=document.createElement("div"),league=document.createElement("div");name.className="match-name";name.textContent=m.match;league.className="match-league";league.textContent=m.league||"Campionato non indicato";info.append(name,league);const controls=document.createElement("div"),edit=document.createElement("button"),del=document.createElement("button");edit.className="btn secondary small";edit.textContent="Modifica";edit.onclick=()=>fillEdit(m.id);del.className="btn danger small";del.textContent="×";del.onclick=()=>{if(confirm("Eliminare questa partita dal palinsesto?")){catalog=catalog.filter(x=>x.id!==m.id);persist();renderCatalog()}};controls.append(edit,del);top.append(info,controls);const qgrid=document.createElement("div");qgrid.className="quote-grid";MARKETS.forEach(key=>{const q=m.odds[key];if(!Number.isFinite(Number(q))||Number(q)<1.01)return;const btn=document.createElement("button");btn.className="quote";const label=document.createElement("span"),value=document.createElement("b");label.textContent=key;value.textContent=fmt(Number(q));btn.append(label,value);btn.title=`Aggiungi ${key} per ${m.match}`;btn.onclick=()=>addPick(m.match,m.league,key,Number(q),key==="1"||key==="X"||key==="2"?"Esito":key==="Gol"||key==="NoGol"?"Goal/No Goal":"Over/Under");qgrid.append(btn)});card.append(top,qgrid);box.append(card)})}
+function fillEdit(id){const m=catalog.find(x=>x.id===id);if(!m)return;editingId=id;$("catMatch").value=m.match;$("catLeague").value=m.league||"";Object.entries(quoteFields).forEach(([k,f])=>$(f).value=m.odds[k]??"");$("saveMatch").textContent="Aggiorna partita";window.scrollTo({top:0,behavior:"smooth"})}
+function clearCatForm(){editingId=null;["catMatch","catLeague",...Object.values(quoteFields)].forEach(id=>$(id).value="");$("saveMatch").textContent="Salva partita nel palinsesto"}
+function renderSysCalc(){const n=events.length,k=Number($("sysK").value),c=choose(n,k),per=Number($("sysStake").value)||0;$("sysN").textContent=n;$("sysCount").textContent=c||"—";$("sysCost").textContent=c?money(c*per):"—";$("saveSystem").disabled=!c||per<=0}
+function renderSystems(){const box=$("systemsList");box.replaceChildren();$("systemCount").textContent=`${systems.length} salvati`;if(!systems.length){box.innerHTML='<div class="empty">Nessun sistema salvato.</div>';return}[...systems].reverse().forEach(sys=>{const card=document.createElement("article");card.className="ticket";const wins=combos(sys.events,sys.k).filter(c=>c.every(e=>sys.results[e.id]==="won")),pending=sys.events.some(e=>(sys.results[e.id]||"pending")==="pending"),ret=wins.reduce((s,c)=>s+sys.perCombo*c.reduce((p,e)=>p*e.odd,1),0),head=document.createElement("div");head.className="tickethead";head.innerHTML=`<div><div class="tickettitle">Sistema ${sys.k}-uple · ${sys.date}</div><div class="meta">${sys.events.length} eventi · ${sys.count} combinazioni · Costo ${money(sys.cost)}</div></div><span class="status ${pending?"pending":ret>=sys.cost?"won":"lost"}">${pending?"Da completare":"Completato"}</span>`;card.append(head);const sum=document.createElement("div");sum.className="summary";sum.innerHTML=`<div class="sumrow"><span>Combinazioni vincenti</span><strong>${wins.length}</strong></div><div class="sumrow"><span>Ritorno simulato</span><strong>${money(ret)}</strong></div>${pending?"":`<div class="sumrow total"><span>Saldo simulato</span><strong class="${ret>=sys.cost?"positive":"negative"}">${money(ret-sys.cost)}</strong></div>`}`;card.append(sum);sys.events.forEach(e=>{const row=document.createElement("div");row.className="system-event";const label=document.createElement("span");label.textContent=`${e.match} · ${e.pick} (${fmt(e.odd)})`;row.append(label);[["V","won","selV"],["P","lost","selP"],["—","pending","selN"]].forEach(([txt,val,cls])=>{const b=document.createElement("button");b.className=`result ${(sys.results[e.id]||"pending")===val?cls:""}`;b.textContent=txt;b.onclick=()=>{sys.results[e.id]=val;persist();renderSystems()};row.append(b)});card.append(row)});const del=document.createElement("button");del.className="btn secondary small";del.style.marginTop="10px";del.textContent="Elimina sistema";del.onclick=()=>{if(confirm("Eliminare il sistema?")){systems=systems.filter(x=>x.id!==sys.id);persist();renderSystems()}};card.append(del);box.append(card)})}
+function renderHistory(){const box=$("history");box.replaceChildren();const f=$("filterLeague").value.trim().toLowerCase(),c=$("filterCategory").value,arr=[...tickets].reverse().filter(t=>(!f||t.events.some(e=>(e.league||"").toLowerCase().includes(f)))&&(c==="Tutte"||t.events.some(e=>e.category===c)));if(!arr.length){box.innerHTML='<div class="empty">Nessuna schedina trovata.</div>';return}arr.forEach(t=>{const card=document.createElement("article");card.className="ticket";const head=document.createElement("div");head.className="tickethead";head.innerHTML=`<div><div class="tickettitle">Schedina · ${t.date}</div><div class="meta">${t.events.length} eventi · Quota ${fmt(t.totalOdds)} · Puntata ${money(t.stake)}</div></div><span class="status ${t.status}">${t.status==="won"?"Vinta":t.status==="lost"?"Persa":"In attesa"}</span>`;const ev=document.createElement("div");ev.className="ticketevents";ev.textContent=t.events.map(e=>`${e.match} — ${e.pick} (${fmt(e.odd)})`).join(" · ");const foot=document.createElement("div");foot.className="ticketfoot";const result=document.createElement("span");result.className="muted";result.textContent=t.status==="won"?`Profitto ${money(t.stake*(t.totalOdds-1))}`:t.status==="lost"?`Perdita ${money(t.stake)}`:`Netto potenziale ${money(t.stake*(t.totalOdds-1))}`;const actions=document.createElement("div");actions.className="actions";[["Vinta","primary","won"],["Persa","danger","lost"],["Elimina","secondary","delete"]].forEach(([label,cl,act])=>{const b=document.createElement("button");b.className=`btn small ${cl}`;b.textContent=label;b.onclick=()=>{if(act==="delete"){if(confirm("Eliminare la schedina?"))tickets=tickets.filter(x=>x.id!==t.id)}else t.status=act;persist();renderAll()};actions.append(b)});foot.append(result,actions);card.append(head,ev,foot);box.append(card)})}
+function renderChart(){const el=$("chart");el.replaceChildren();const now=new Date(),data=[];for(let i=5;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1),key=`${d.getFullYear()}-${d.getMonth()}`,profit=tickets.reduce((s,t)=>{const p=t.date.split(/[\/,\s]+/),dt=new Date(Number(p[2]),Number(p[1])-1,Number(p[0]));return `${dt.getFullYear()}-${dt.getMonth()}`===key?s+(t.status==="won"?t.stake*(t.totalOdds-1):t.status==="lost"?-t.stake:0):s},0);data.push({label:d.toLocaleDateString("it-IT",{month:"short"}),profit})}const max=Math.max(1,...data.map(x=>Math.abs(x.profit)));data.forEach(d=>{const c=document.createElement("div");c.className="barcol";const tr=document.createElement("div");tr.className="bartrack";const b=document.createElement("div");b.className="bar";b.style.height=`${Math.max(3,Math.abs(d.profit)/max*100)}%`;b.style.background=d.profit>=0?"var(--green)":"var(--red)";tr.append(b);const l=document.createElement("small");l.textContent=d.label;const v=document.createElement("b");v.textContent=d.profit?Math.round(d.profit):"—";v.style.color=d.profit>0?"var(--green)":d.profit<0?"var(--red)":"var(--muted)";c.append(tr,l,v);el.append(c)})}
+function renderAll(){renderEvents();renderCatalog();renderSystems();renderHistory();renderStats()}
+function getShareText(){if(!events.length)return "Tracker Schedine: nessun evento inserito.";const stake=Number($("stake").value)||0,odds=events.reduce((a,e)=>a*e.odd,1);return `⚽ TRACKER SCHEDINE\n${events.map((e,i)=>`${i+1}. ${e.match}\n   Pronostico: ${e.pick} | Quota: ${fmt(e.odd)}`).join("\n")}\n\nEventi: ${events.length}\nQuota totale: ${fmt(odds)}\nPuntata: ${money(stake)}\nVincita potenziale lorda: ${money(stake*odds)}\nProfitto potenziale netto: ${money(stake*(odds-1))}\n\nSimulazione indicativa, non garanzia di vincita.`}
+async function copyText(text){try{await navigator.clipboard.writeText(text);alert("Schedina copiata. Puoi incollarla su WhatsApp o Telegram.")}catch{const ta=document.createElement("textarea");ta.value=text;document.body.append(ta);ta.select();document.execCommand("copy");ta.remove();alert("Testo copiato.")}}
+function riskBand(risk){return risk==="low"?[1.2,1.5]:risk==="medium"?[1.5,2.2]:risk==="high"?[2.2,Infinity]:[1.01,1000]}
+function generate(){
+const n=Number($("genN").value),min=Number($("minOdds").value),max=Number($("maxOdds").value),risk=$("risk").value,band=riskBand(risk);
+if(!Number.isInteger(n)||n<2||n>15||min<1||max<min){alert("Controlla numero eventi e intervallo quota totale.");return}
+const pool=[];catalog.forEach(m=>MARKETS.forEach(k=>{const q=Number(m.odds[k]);if(Number.isFinite(q)&&q>=band[0]&&q<band[1])pool.push({id:uid(),match:m.match,league:m.league,pick:k,odd:q,category:k==="1"||k==="X"||k==="2"?"Esito":k==="Gol"||k==="NoGol"?"Goal/No Goal":"Over/Under"})}));
+const byMatch=new Map();pool.forEach(p=>{if(!byMatch.has(p.match))byMatch.set(p.match,[]);byMatch.get(p.match).push(p)});
+const groups=[...byMatch.values()].filter(g=>g.length);if(groups.length<n){alert(`Con il rischio scelto ci sono solo ${groups.length} partite con quote compatibili. Aggiungi partite o cambia rischio.`);return}
+let best=null,bestScore=Infinity;
+for(let attempt=0;attempt<30000;attempt++){
+const shuffled=[...groups].sort(()=>Math.random()-.5).slice(0,n);
+const picks=shuffled.map(g=>{const sorted=[...g].sort((a,b)=>genMode==="smart"?Math.abs(Math.log(a.odd/Math.sqrt(band[0]*Math.min(band[1],10))))-Math.abs(Math.log(b.odd/Math.sqrt(band[0]*Math.min(band[1],10)))):Math.random()-.5);return genMode==="smart"?sorted[Math.floor(Math.random()*Math.min(3,sorted.length))]:sorted[Math.floor(Math.random()*sorted.length)]});
+const total=picks.reduce((a,p)=>a*p.odd,1),score=total<min?min-total:total>max?total-max:Math.abs(Math.log(total/Math.sqrt(min*max)))*.0001;
+if(score<bestScore){bestScore=score;best={picks,total};if(total>=min&&total<=max)break}
+}
+if(!best||best.total<min||best.total>max){alert("Non ho trovato una combinazione che rispetti esattamente l'intervallo richiesto. Prova ad ampliare la quota o cambiare rischio.");$("genOutput").replaceChildren();return}
+lastGenerated=best.picks.map(p=>({...p}));renderGenerated(best.picks,best.total);
+}
+function renderGenerated(picks,total){
+const out=$("genOutput");out.replaceChildren();const box=document.createElement("div");box.className="gen-result";
+const h=document.createElement("h3");h.textContent=`Proposta generata · quota ${fmt(total)}`;box.append(h);
+picks.forEach((p,i)=>{const line=document.createElement("div");line.className="quote-line";const a=document.createElement("span");a.textContent=`${i+1}. ${p.match} — ${p.pick}`;const b=document.createElement("b");b.textContent=fmt(p.odd);line.append(a,b);box.append(line)});
+const isSystem=ticketMode==="system",k=Number($("genK").value),unit=Number($("genUnitStake").value)||1,stake=Number($("stake").value)||2,combCount=isSystem?choose(picks.length,k):1,cost=isSystem?combCount*unit:stake;
+const payout=isSystem?combos(picks,k).map(c=>unit*c.reduce((a,e)=>a*e.odd,1)):[stake*total];
+const minPay=Math.min(...payout),maxPay=Math.max(...payout);
+const sum=document.createElement("div");sum.className="summary";
+sum.innerHTML=isSystem?`<div class="sumrow"><span>Modalità</span><strong>Sistema ${k} su ${picks.length}</strong></div><div class="sumrow"><span>Combinazioni</span><strong>${combCount}</strong></div><div class="sumrow"><span>Puntata per combinazione</span><strong>${money(unit)}</strong></div><div class="sumrow"><span>Costo totale</span><strong>${money(cost)}</strong></div><div class="sumrow"><span>Ritorno lordo minimo / massimo se tutte le selezioni vincenti disponibili</span><strong>${money(minPay)} / ${money(maxPay)}</strong></div>`:`<div class="sumrow"><span>Modalità</span><strong>Multipla classica</strong></div><div class="sumrow"><span>Puntata</span><strong>${money(stake)}</strong></div><div class="sumrow"><span>Vincita lorda potenziale</span><strong>${money(stake*total)}</strong></div><div class="sumrow total"><span>Profitto netto potenziale</span><strong>${money(stake*(total-1))}</strong></div>`;
+box.append(sum);
+const actions=document.createElement("div");actions.className="row";actions.style.marginTop="10px";const use=document.createElement("button");use.className="btn primary";use.textContent="Usa questa schedina";use.onclick=()=>{events=picks.map(p=>({...p}));$("stake").value=String(isSystem?unit:stake);renderAll();document.querySelector('nav button[data-tab="builder"]').click()};
+const copy=document.createElement("button");copy.className="btn blue";copy.textContent="Copia schedina";copy.onclick=()=>copyText(`⚽ TRACKER SCHEDINE\n${picks.map((p,i)=>`${i+1}. ${p.match} — ${p.pick} @ ${fmt(p.odd)}`).join("\n")}\nQuota selezioni: ${fmt(total)}\n${isSystem?`Sistema ${k}/${picks.length} · ${combCount} combinazioni · costo ${money(cost)}`:`Multipla classica · puntata ${money(stake)} · vincita lorda ${money(stake*total)}`}`);
+actions.append(use,copy);box.append(actions);out.append(box);
+}
+$("eventform").onsubmit=e=>{e.preventDefault();const match=$("match").value.trim(),pick=$("pick").value.trim(),odd=Number($("odd").value);if(!match||!pick||odd<1.01||odd>1000){alert("Inserisci dati validi.");return}events.push({id:uid(),match,pick,odd,league:$("league").value.trim(),category:$("category").value});$("eventform").reset();renderAll()};
+$("stake").oninput=renderEvents;$("clear").onclick=()=>{if(confirm("Azzero gli eventi della schedina?")){events=[];$("stake").value="2.00";renderAll()}};
+$("save").onclick=()=>{const stake=Number($("stake").value),totalOdds=events.reduce((a,e)=>a*e.odd,1);if(!events.length||stake<=0)return;tickets.push({id:uid(),date:new Intl.DateTimeFormat("it-IT",{dateStyle:"short",timeStyle:"short"}).format(new Date()),events:events.map(e=>({...e})),stake,totalOdds,status:"pending"});events=[];$("stake").value="2.00";persist();renderAll();alert("Schedina salvata.")};
+$("copySlip").onclick=()=>copyText(getShareText());$("shareSlip").onclick=async()=>{const text=getShareText();if(navigator.share){try{await navigator.share({title:"La mia schedina",text})}catch{}}else copyText(text)};
+$("saveMatch").onclick=()=>{const name=$("catMatch").value.trim();if(!name){alert("Inserisci il nome della partita.");return}const odds={};Object.entries(quoteFields).forEach(([k,id])=>{const v=Number($(id).value);if(v>=1.01&&v<=1000)odds[k]=v});if(!Object.keys(odds).length){alert("Inserisci almeno una quota valida.");return}const item={id:editingId||uid(),match:name,league:$("catLeague").value.trim(),odds};if(editingId)catalog=catalog.map(m=>m.id===editingId?item:m);else catalog.push(item);clearCatForm();persist();renderCatalog();alert("Partita salvata nel palinsesto.")};
+function clearCatForm(){editingId=null;["catMatch","catLeague",...Object.values(quoteFields)].forEach(id=>$(id).value="");$("saveMatch").textContent="Salva partita nel palinsesto"}
+$("importBtn").onclick=()=>{let added=0;const rows=$("importText").value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);rows.forEach(row=>{const parts=row.split("|").map(x=>x.trim()),match=parts.shift();if(!match)return;const league=parts.length&& !parts[0].includes("=")?parts.shift():"";const odds={};parts.forEach(part=>{const ix=part.indexOf("=");if(ix<0)return;let key=part.slice(0,ix).trim(),val=Number(part.slice(ix+1).trim().replace(",","."));const aliases={"No Gol":"NoGol","NoGoal":"NoGol","Over":"Over 2.5","Under":"Under 2.5"};key=aliases[key]||key;if(MARKETS.includes(key)&&val>=1.01&&val<=1000)odds[key]=val});if(Object.keys(odds).length){catalog.push({id:uid(),match,league,odds});added++}});persist();renderCatalog();alert(`${added} partite importate.`)};
+$("catalogSearch").oninput=renderCatalog;$("sysK").onchange=renderSysCalc;$("sysStake").oninput=renderSysCalc;
+$("saveSystem").onclick=()=>{const n=events.length,k=Number($("sysK").value),per=Number($("sysStake").value),count=choose(n,k);if(!count||per<=0){alert("Eventi o puntata non validi.");return}systems.push({id:uid(),date:new Intl.DateTimeFormat("it-IT",{dateStyle:"short",timeStyle:"short"}).format(new Date()),events:events.map(e=>({...e})),k,perCombo:per,count,cost:count*per,results:Object.fromEntries(events.map(e=>[e.id,"pending"]))});persist();renderSystems();alert(`Sistema salvato: ${count} combinazioni.`)};
+$("randomMode").onclick=()=>{genMode="random";$("randomMode").classList.add("active");$("smartMode").classList.remove("active")};$("smartMode").onclick=()=>{genMode="smart";$("smartMode").classList.add("active");$("randomMode").classList.remove("active")};
+$("multiMode").onclick=()=>{ticketMode="multi";$("multiMode").classList.add("active");$("systemMode").classList.remove("active");$("systemOptions").classList.add("hidden")};$("systemMode").onclick=()=>{ticketMode="system";$("systemMode").classList.add("active");$("multiMode").classList.remove("active");$("systemOptions").classList.remove("hidden")};
+$("generate").onclick=generate;$("filterLeague").oninput=renderHistory;$("filterCategory").onchange=renderHistory;
+$("backup").onclick=()=>{const blob=new Blob([JSON.stringify({app:"Tracker Schedine",version:4,catalog,tickets,systems},null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="tracker-schedine-backup.json";a.click();URL.revokeObjectURL(url)};
+document.querySelectorAll("nav button").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b===btn));document.querySelectorAll(".tab").forEach(t=>t.classList.add("hidden"));$("tab-"+btn.dataset.tab).classList.remove("hidden");if(btn.dataset.tab==="systems")renderSysCalc()});
+load();renderAll();
+})();
+</script>
+
+<script>
+(()=> {
+"use strict";
+const $=id=>document.getElementById(id);
+const date=new Date(); const localDate=new Date(date.getTime()-date.getTimezoneOffset()*60000).toISOString().slice(0,10);
+$("aiDate").value=localDate;
+const pct=n=>`${(Number(n)*100).toFixed(1)}%`;
+async function status(){
+ try{
+  const r=await fetch("/api/status"); const d=await r.json();
+  $("aiStatus").textContent=d.apiFootball?"API-Football configurata":"API-Football non configurata";
+  $("aiStatus").style.color=d.apiFootball?"var(--green)":"var(--red)";
+  if(!d.openai) $("aiMessage").textContent="OpenAI non configurata: l'analisi statistica funziona comunque, ma le motivazioni AI non saranno disponibili.";
+ }catch(e){$("aiStatus").textContent="Backend non raggiungibile";$("aiStatus").style.color="var(--red)";$("aiMessage").textContent="Apri l'app dal server Node.js (non come file HTML locale) e verifica che il backend sia avviato."}
+}
+function render(data){
+ const out=$("aiOutput"); out.replaceChildren();
+ const summary=document.createElement("div"); summary.className="summary";
+ summary.innerHTML=`<div class="sumrow"><span>Partite trovate</span><strong>${data.meta.fixturesFound}</strong></div><div class="sumrow"><span>Partite approfondite</span><strong>${data.meta.analyzed}</strong></div><div class="sumrow"><span>Analisi AI</span><strong>${data.meta.aiUsed?"Attiva":"Non configurata / fallback statistico"}</strong></div>`;
+ out.append(summary);
+ const title=document.createElement("h3");title.textContent="Selezioni consigliate";title.style.margin="18px 0 8px";out.append(title);
+ const picks=data.recommendations||[];
+ if(!picks.length){const e=document.createElement("div");e.className="empty";e.textContent="Nessuna selezione ha superato i filtri. Prova un profilo diverso o un'altra data.";out.append(e);return}
+ let total=1;
+ picks.forEach((p,i)=>{
+  total*=Number(p.odds||1);
+  const card=document.createElement("article");card.className="match-card";card.style.marginTop="9px";
+  const h=document.createElement("div");h.className="tickethead";
+  const left=document.createElement("div");const name=document.createElement("div");name.className="match-name";name.textContent=`${i+1}. ${p.home} - ${p.away}`;
+  const league=document.createElement("div");league.className="match-league";league.textContent=`${p.league} · ${p.kickoff||"Orario non disponibile"}`;
+  left.append(name,league);const badge=document.createElement("span");badge.className="pill";badge.textContent=`${p.market} · ${Number(p.odds).toFixed(2)}`;
+  h.append(left,badge);card.append(h);
+  const detail=document.createElement("div");detail.className="ticketevents";
+  detail.textContent=`Probabilità Poisson: ${pct(p.probability)} · Probabilità implicita quota: ${p.impliedProbability==null?"n.d.":pct(p.impliedProbability)} · ${p.reason||"Motivazione statistica non disponibile."}`;
+  card.append(detail);
+  const stats=document.createElement("div");stats.className="meta";
+  stats.textContent=`1 ${pct(p.probabilities.homeWin)} · X ${pct(p.probabilities.draw)} · 2 ${pct(p.probabilities.awayWin)} · Over 2.5 ${pct(p.probabilities.over25)} · Under 2.5 ${pct(p.probabilities.under25)} · Gol ${pct(p.probabilities.bttsYes)}`;
+  card.append(stats);
+  const add=document.createElement("button");add.className="btn secondary small";add.style.marginTop="10px";add.textContent="Aggiungi alla schedina";
+  add.onclick=()=>{const event={id:(crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random())),match:`${p.home} - ${p.away}`,league:p.league,pick:p.market,odd:Number(p.odds),category:"Analisi AI"}; 
+    // Usa la stessa memoria applicativa dell'interfaccia, tramite il form esistente.
+    $("match").value=event.match;$("league").value=event.league;$("pick").value=event.pick;$("odd").value=event.odd;$("category").value="Altro";
+    $("eventform").dispatchEvent(new Event("submit",{bubbles:true,cancelable:true}));
+  };
+  card.append(add);out.append(card);
+ });
+ const footer=document.createElement("div");footer.className="summary";footer.innerHTML=`<div class="sumrow"><span>Quota totale combinata</span><strong>${total.toFixed(2)}</strong></div><div class="sumrow"><span>Nota</span><strong>Probabilità indipendenti, stima non garantita</strong></div>`;out.append(footer);
+}
+$("aiGenerate").addEventListener("click",async()=>{
+ const btn=$("aiGenerate");btn.disabled=true;btn.textContent="Analisi in corso…";$("aiMessage").textContent="Recupero calendario, forma recente, quote e dati disponibili. Le richieste API possono richiedere qualche minuto.";
+ $("aiOutput").replaceChildren();
+ try{
+  const payload={date:$("aiDate").value, count:Math.max(2,Math.min(15,Number($("aiCount").value)||4)),profile:$("aiProfile").value,targetOdds:Math.max(1.01,Number($("aiTarget").value)||6),leagueScope:$("aiLeagues").value,maxFixtures:Number($("aiMax").value)};
+  const response=await fetch("/api/analyze",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+  const result=await response.json();if(!response.ok)throw new Error(result.error||"Errore durante l'analisi");
+  render(result);$("aiMessage").textContent=result.warnings?.join(" · ")||"Analisi completata. Controlla sempre le fonti e i dati prima di usare i pronostici.";
+ }catch(e){$("aiMessage").textContent=`Errore: ${e.message}`;}
+ finally{btn.disabled=false;btn.textContent="Analizza partite e genera schedina";}
+});
+document.querySelector('nav button[data-tab="ai"]').addEventListener("click",status);
+status();
+})();
+</script>
+
+</body>
+</html>
